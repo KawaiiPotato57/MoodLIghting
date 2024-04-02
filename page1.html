@@ -84,10 +84,118 @@
         border-radius: 5px;
         margin-right: 5px;
       }
+      /* Calendar Styles */
+      .calendar {
+        margin-top: 20px;
+      }
+
+      .calendar h2,
+      .calendar h3 {
+        text-align: center;
+        color: #333;
+      }
+
+      .week-header,
+      .dates {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+      }
+
+      .week-header div,
+      .dates .date {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+        border: 1px solid #ddd;
+        margin: 2px;
+      }
+
+      .week-header div {
+        background-color: #f0f0f0;
+      }
+
+      .date {
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .date:hover {
+        background-color: #e9ecef;
+      }
+
+      .today {
+        border: 2px solid #007bff; /* Highlight today with a border */
+      }
+
+      /* Adjust this based on your specific needs, possibly include media queries for responsiveness */
+      /* .calendar,
+      .week-header,
+      .dates {
+        width: 100%;
+      }
+
+      .date.selected {
+        background-color: #007bff;
+        color: #ffffff;
+      }
+      
+      .week-header {
+        display: flex;
+        justify-content: space-around;
+        background-color: #f0f0f0;
+        padding: 5px;
+      }
+
+      .week-header div {
+        flex: 1;
+        text-align: center;
+      }
+
+      .dates {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-gap: 5px;
+      }
+
+      .date {
+        text-align: center;
+      } */
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+      }
+
+      /* Day name */
+      .day-name {
+        font-weight: bold;
+        text-align: center;
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+        color: #333;
+      }
+
+      /* Dates */
+      .date {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid #ddd;
+      }
+
+      /* Today's date highlight */
+      .today {
+        background-color: #ddd;
+      }
     </style>
   </head>
   <body>
-   
     <!-- Navigation Bar -->
 
     <!-- Content Area -->
@@ -139,6 +247,9 @@
         <!-- Record Mood -->
         <button class="button record-btn">Record Mood</button>
 
+        <!-- Inside the container div -->
+        <div class="calendar" id="calendar"></div>
+
         <!-- Past Records -->
         <div class="records">
           <h2>Past Records:</h2>
@@ -180,34 +291,124 @@
         });
       });
 
+      // document
+      //   .querySelector(".record-btn")
+      //   .addEventListener("click", function () {
+      //     const selectedMood = document.querySelector(".mood-option.selected");
+      //     if (selectedMood) {
+      //       const mood = selectedMood.textContent;
+      //       const recordsList = document.querySelector(".records ul");
+      //       const recordItem = document.createElement("li");
+
+      //       // Get current date and time
+      //       const currentDate = new Date();
+      //       const dateTimeString = currentDate.toLocaleString();
+
+      //       // Create a colored pill element
+      //       const colorPill = document.createElement("span");
+      //       colorPill.classList.add("color-pill");
+      //       colorPill.style.backgroundColor =
+      //         window.getComputedStyle(selectedMood).backgroundColor;
+
+      //       // Append color pill, mood, and date/time stamp to the record item
+      //       recordItem.appendChild(colorPill);
+      //       recordItem.innerHTML += ` ${mood} - Recorded on ${dateTimeString}`;
+      //       recordItem.classList.add("record-item");
+      //       recordsList.appendChild(recordItem);
+      //     } else {
+      //       alert("Please select a mood before recording.");
+      //     }
+      //   });
+
       document
         .querySelector(".record-btn")
         .addEventListener("click", function () {
           const selectedMood = document.querySelector(".mood-option.selected");
           if (selectedMood) {
-            const mood = selectedMood.textContent;
-            const recordsList = document.querySelector(".records ul");
-            const recordItem = document.createElement("li");
-
-            // Get current date and time
             const currentDate = new Date();
-            const dateTimeString = currentDate.toLocaleString();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const day = currentDate.getDate();
 
-            // Create a colored pill element
-            const colorPill = document.createElement("span");
-            colorPill.classList.add("color-pill");
-            colorPill.style.backgroundColor =
-              window.getComputedStyle(selectedMood).backgroundColor;
+            const dateString = `${year}-${month + 1}-${day}`;
 
-            // Append color pill, mood, and date/time stamp to the record item
-            recordItem.appendChild(colorPill);
-            recordItem.innerHTML += ` ${mood} - Recorded on ${dateTimeString}`;
-            recordItem.classList.add("record-item");
-            recordsList.appendChild(recordItem);
+            const dateElements = document.querySelectorAll(".date");
+            dateElements.forEach((dateElement) => {
+              if (dateElement.textContent == day) {
+                const computedStyle = window.getComputedStyle(selectedMood);
+                const backgroundColor =
+                  computedStyle.getPropertyValue("background-color");
+                dateElement.style.backgroundColor = backgroundColor;
+              }
+            });
           } else {
             alert("Please select a mood before recording.");
           }
         });
+
+      function generateCalendar(year, month) {
+        const calendar = document.getElementById("calendar");
+        calendar.innerHTML = ""; // Clear previous calendar
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const daysInMonth = lastDay.getDate();
+        const firstDayOfWeek = firstDay.getDay(); // 0 (Sunday) - 6 (Saturday)
+
+        // Days of the week
+        const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+        // Start position for dates based on first day of week
+        let datePosition = firstDayOfWeek;
+
+        // Generate HTML for day names
+        weekDays.forEach((dayName) => {
+          const dayNameElement = document.createElement("div");
+          dayNameElement.classList.add("day-name");
+          dayNameElement.textContent = dayName;
+          calendar.appendChild(dayNameElement);
+        });
+
+        // Generate HTML for dates
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateElement = document.createElement("div");
+          dateElement.classList.add("date");
+
+          // Highlight today's date
+          if (
+            day === new Date().getDate() &&
+            month === new Date().getMonth() &&
+            year === new Date().getFullYear()
+          ) {
+            dateElement.classList.add("today");
+          }
+          dateElement.textContent = day;
+
+          // Add date to specific grid position
+          calendar.appendChild(dateElement);
+          datePosition++;
+
+          // Move to next row when end of week is reached
+          if (datePosition % 7 === 0) {
+            datePosition = 0;
+          }
+        }
+      }
+
+      // Initial calendar setup for current month and year
+      const now = new Date();
+      generateCalendar(now.getFullYear(), now.getMonth());
+
+      // Inside the generateCalendar function, after setting up each dateElement
+      dateElement.addEventListener("click", function () {
+        // Remove 'selected' class from all dates
+        document
+          .querySelectorAll(".dates .date")
+          .forEach((d) => d.classList.remove("selected"));
+        // Add 'selected' class to clicked date
+        this.classList.add("selected");
+      });
     </script>
   </body>
 </html>

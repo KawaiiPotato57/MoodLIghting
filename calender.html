@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar with Day Names in First Row</title>
+    <style>
+      /* Calendar container */
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+      }
+
+      /* Day name */
+      .day-name {
+        font-weight: bold;
+        text-align: center;
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+        color: #333;
+      }
+
+      /* Dates */
+      .date {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid #ddd;
+      }
+
+      /* Today's date highlight */
+      .today {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calendar" id="calendar"></div>
+
+    <script>
+      function generateCalendar(year, month) {
+        const calendar = document.getElementById("calendar");
+        calendar.innerHTML = ""; // Clear previous calendar
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const daysInMonth = lastDay.getDate();
+        const firstDayOfWeek = firstDay.getDay(); // 0 (Sunday) - 6 (Saturday)
+
+        // Days of the week
+        const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+        // Start position for dates based on first day of week
+        let datePosition = firstDayOfWeek;
+
+        // Generate HTML for day names
+        weekDays.forEach((dayName) => {
+          const dayNameElement = document.createElement("div");
+          dayNameElement.classList.add("day-name");
+          dayNameElement.textContent = dayName;
+          calendar.appendChild(dayNameElement);
+        });
+
+        // Generate HTML for dates
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateElement = document.createElement("div");
+          dateElement.classList.add("date");
+
+          // Highlight today's date
+          if (
+            day === new Date().getDate() &&
+            month === new Date().getMonth() &&
+            year === new Date().getFullYear()
+          ) {
+            dateElement.classList.add("today");
+          }
+          dateElement.textContent = day;
+
+          // Add date to specific grid position
+          calendar.appendChild(dateElement);
+          datePosition++;
+
+          // Move to next row when end of week is reached
+          if (datePosition % 7 === 0) {
+            datePosition = 0;
+          }
+        }
+      }
+
+      // Initial calendar setup for current month and year
+      const now = new Date();
+      generateCalendar(now.getFullYear(), now.getMonth());
+    </script>
+  </body>
+</html>

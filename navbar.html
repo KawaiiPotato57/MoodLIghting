@@ -231,6 +231,37 @@
         margin-top: 20px;
         cursor: pointer;
       }
+
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #a3a3a3;
+      }
+
+      /* Day name */
+      .day-name {
+        font-weight: bold;
+        text-align: center;
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+        color: #333;
+      }
+
+      /* Dates */
+      .date {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid #ddd;
+      }
+
+      /* Today's date highlight */
+      .today {
+        background-color: #ddd;
+      }
     </style>
   </head>
 
@@ -295,14 +326,13 @@
 
           <!-- Record Mood -->
           <button class="button record-btn">Record Mood</button>
-
+          <div class="calendar" id="calendar"></div>
           <!-- Past Records -->
-          <div class="records">
+          <!-- <div class="records">
             <h2>Past Records:</h2>
             <ul>
-              <!-- Past records will be dynamically populated here -->
             </ul>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -404,29 +434,110 @@
         .addEventListener("click", function () {
           const selectedMood = document.querySelector(".mood-option.selected");
           if (selectedMood) {
-            const mood = selectedMood.textContent;
-            const recordsList = document.querySelector(".records ul");
-            const recordItem = document.createElement("li");
+            const computedStyle = window.getComputedStyle(selectedMood);
+            const moodColor =
+              computedStyle.getPropertyValue("background-color");
+            const bgColor = window
+              .getComputedStyle(document.body)
+              .getPropertyValue("background-color");
 
-            // Get current date and time
+            // Parse RGB values of mood color and background color
+            const rgbMood = moodColor.match(/\d+/g).map(Number);
+            const rgbBg = bgColor.match(/\d+/g).map(Number);
+
+            // Calculate tint by averaging RGB values
+            const tintedR = Math.round((rgbMood[0] + rgbBg[0]) / 2);
+            const tintedG = Math.round((rgbMood[1] + rgbBg[1]) / 2);
+            const tintedB = Math.round((rgbMood[2] + rgbBg[2]) / 2);
+
+            // Set background color with tint effect
+            document.body.style.backgroundImage = `linear-gradient(to bottom, rgba(${rgbBg[0]}, ${rgbBg[1]}, ${rgbBg[2]}, 1), rgba(${tintedR}, ${tintedG}, ${tintedB}, 0.5))`;
+            document.body.style.backgroundSize = "100vw 100vh";
+            document.body.style.backgroundRepeat = "no-repeat";
             const currentDate = new Date();
-            const dateTimeString = currentDate.toLocaleString();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const day = currentDate.getDate();
 
-            // Create a colored pill element
-            const colorPill = document.createElement("span");
-            colorPill.classList.add("color-pill");
-            colorPill.style.backgroundColor =
-              window.getComputedStyle(selectedMood).backgroundColor;
+            const dateString = `${year}-${month + 1}-${day}`;
 
-            // Append color pill, mood, and date/time stamp to the record item
-            recordItem.appendChild(colorPill);
-            recordItem.innerHTML += ` ${mood} - Recorded on ${dateTimeString}`;
-            recordItem.classList.add("record-item");
-            recordsList.appendChild(recordItem);
+            const dateElements = document.querySelectorAll(".date");
+            dateElements.forEach((dateElement) => {
+              if (dateElement.textContent == day) {
+                const computedStyle = window.getComputedStyle(selectedMood);
+                const backgroundColor =
+                  computedStyle.getPropertyValue("background-color");
+                dateElement.style.backgroundColor = backgroundColor;
+              }
+            });
           } else {
             alert("Please select a mood before recording.");
           }
         });
+
+      function generateCalendar(year, month) {
+        const calendar = document.getElementById("calendar");
+        calendar.innerHTML = ""; // Clear previous calendar
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const daysInMonth = lastDay.getDate();
+        const firstDayOfWeek = firstDay.getDay(); // 0 (Sunday) - 6 (Saturday)
+
+        // Days of the week
+        const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+        // Start position for dates based on first day of week
+        let datePosition = firstDayOfWeek;
+
+        // Generate HTML for day names
+        weekDays.forEach((dayName) => {
+          const dayNameElement = document.createElement("div");
+          dayNameElement.classList.add("day-name");
+          dayNameElement.textContent = dayName;
+          calendar.appendChild(dayNameElement);
+        });
+
+        // Generate HTML for dates
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateElement = document.createElement("div");
+          dateElement.classList.add("date");
+
+          // Highlight today's date
+          if (
+            day === new Date().getDate() &&
+            month === new Date().getMonth() &&
+            year === new Date().getFullYear()
+          ) {
+            dateElement.classList.add("today");
+          }
+          dateElement.textContent = day;
+
+          // Add date to specific grid position
+          calendar.appendChild(dateElement);
+          datePosition++;
+
+          // Move to next row when end of week is reached
+          if (datePosition % 7 === 0) {
+            datePosition = 0;
+          }
+        }
+      }
+
+      // Initial calendar setup for current month and year
+      const now = new Date();
+      generateCalendar(now.getFullYear(), now.getMonth());
+
+      // Inside the generateCalendar function, after setting up each dateElement
+      dateElement.addEventListener("click", function () {
+        // Remove 'selected' class from all dates
+        document
+          .querySelectorAll(".dates .date")
+          .forEach((d) => d.classList.remove("selected"));
+        // Add 'selected' class to clicked date
+        this.classList.add("selected");
+      });
 
       function showDialog() {
         document.getElementById("dialog").style.display = "block";

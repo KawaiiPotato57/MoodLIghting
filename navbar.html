@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Navigation Bar Example</title>
+
+    <style>
+      body {
+        background-color: #929292;
+      }
+      .navbar {
+        background-color: #333;
+        overflow: hidden;
+      }
+
+      /* Style for the navigation bar links */
+      .navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+      }
+
+      /* Style for the active tab */
+      .navbar a.active {
+        background-color: #ddd;
+        color: #333;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        align-items: center;
+      }
+      h1 {
+        color: #333;
+      }
+      /* .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: #0056b3;
+      } */
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px;
+        background-color: #007bff; /* Off state color */
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Smooth transition for color change */
+      }
+
+      .button:hover {
+        background-color: #0056b3; /* Darker shade for hover effect */
+      }
+
+      .button-on {
+        background-color: #ffdd00; /* On state color, resembling a light */
+        color: #000; /* Text color change to improve readability when on */
+      }
+
+      .button-on:hover {
+        background-color: #ffcc00; /* Slightly different shade for hover when on */
+      }
+
+      .moods-container {
+        display: flex;
+        flex-direction: row;
+        justify-items: center;
+        align-items: center;
+        margin: 10% 0 10% 0;
+      }
+      .mood-select {
+        margin-bottom: 20px;
+      }
+      .mood-option.selected {
+        border-color: var(--selected-mood-color);
+        filter: drop-shadow(10px 0px 10px var(--selected-mood-shadow));
+        transform: scale(1.2);
+        border-radius: 50%;
+      }
+
+      .mood-option {
+        padding: 20px;
+        margin-right: 20px;
+        border: 2px solid transparent;
+        border-radius: 20px;
+        cursor: pointer;
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+      }
+
+      .mood-option.selected {
+        border-color: #ffffff;
+      }
+      .records {
+        margin-top: 20px;
+      }
+      .records ul {
+        list-style: none;
+        padding: 0;
+      }
+      .record-item {
+        background-color: #b2b2b2;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .color-pill {
+        display: inline-block;
+        width: 30px;
+        height: 10px;
+        border-radius: 5px;
+        margin-right: 5px;
+      }
+      .container {
+        max-width: 80vw;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #929292;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .container h1 {
+        margin-bottom: 20px;
+      }
+
+      .map {
+        width: 250px;
+        height: 250px;
+        background-color: #666;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .blimp {
+        width: 20px;
+        height: 20px;
+        background-color: #f00;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .blimp.green {
+        background-color: #0f0;
+      }
+      .blimp.blue {
+        background-color: #00f;
+      }
+      .blimp.yellow {
+        background-color: #ff0;
+      }
+      .blimp.orange {
+        background-color: #ff8c00;
+      }
+
+      .message-box {
+        background-color: #808080;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      .message-box textarea {
+        width: 95%;
+        height: 100px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #666;
+        border-radius: 5px;
+      }
+
+      .message-box button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .dialog {
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #ffffff;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 100px;
+        border-radius: 10px;
+      }
+      .dialog h1 {
+        color: #ffffff;
+      }
+      .closeButton {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-top: 20px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="navbar">
+      <a href="#" onclick="showPage('page1'); return false;" class="active"
+        >Page 1</a
+      >
+
+      <a href="#" onclick="showPage('page2'); return false;">Page 2</a>
+    </div>
+
+    <div id="page1" class="page-content" style="display: block">
+      <div class="content">
+        <!-- Code goes here -->
+        <div class="container">
+          <h1>Page 1: Mood Recorder</h1>
+
+          <!-- Turn LED on/off -->
+          <!-- <button class="button">Turn LED On/Off</button> -->
+
+          <button id="toggleButton" class="button" onclick="toggleBulb()">
+            Turn LED On
+          </button>
+
+          <!-- Select Mood -->
+          <div class="mood-select">
+            <p>Select Your Mood:</p>
+            <div class="moods-container">
+              <div
+                class="mood-option excellent"
+                style="background-color: rgb(255, 166, 0)"
+              >
+                Excellent
+              </div>
+              <div
+                class="mood-option good"
+                style="background-color: rgb(255, 255, 0)"
+              >
+                Good
+              </div>
+              <div
+                class="mood-option okay"
+                style="background-color: rgba(255, 245, 224)"
+              >
+                Okay
+              </div>
+              <div
+                class="mood-option bad"
+                style="background-color: rgb(0, 0, 255); color: white"
+              >
+                Bad
+              </div>
+              <div
+                class="mood-option terrible"
+                style="background-color: rgb(161, 0, 0); color: white"
+              >
+                Terrible
+              </div>
+            </div>
+          </div>
+
+          <!-- Record Mood -->
+          <button class="button record-btn">Record Mood</button>
+
+          <!-- Past Records -->
+          <div class="records">
+            <h2>Past Records:</h2>
+            <ul>
+              <!-- Past records will be dynamically populated here -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page2" class="page-content" style="display: none">
+      <div class="container">
+        <h1>Users using BULBBBBS right now</h1>
+        <div
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <div class="map">
+            <!-- Blimps representing users -->
+            <div class="blimp red" style="top: 20%; left: 30%"></div>
+            <div class="blimp green" style="top: 40%; left: 50%"></div>
+            <div class="blimp blue" style="top: 60%; left: 70%"></div>
+            <div class="blimp yellow" style="top: 80%; left: 40%"></div>
+            <div class="blimp orange" style="top: 30%; left: 60%"></div>
+          </div>
+        </div>
+
+        <div class="message-box">
+          <textarea
+            placeholder="Write your comforting message here..."
+          ></textarea>
+          <button onclick="showDialog()">Send Message</button>
+        </div>
+      </div>
+
+      <!-- Dialog for feature under development -->
+      <div class="dialog" id="dialog" style="display: none">
+        <h1>This feature is under development.</h1>
+        <h1>COMING SOON!</h1>
+        <button onclick="hideDialog()" class="closeButton">Close</button>
+      </div>
+    </div>
+
+    <script>
+      // Function to show the specified page and hide others
+      function showPage(pageId) {
+        // Get the clicked link element
+        var clickedLink = document.activeElement; // Hide all pages
+
+        var pages = document.getElementsByClassName("page-content");
+        for (var i = 0; i < pages.length; i++) {
+          pages[i].style.display = "none";
+        } // Show the selected page
+
+        var page = document.getElementById(pageId);
+        if (page) {
+          page.style.display = "block";
+        }
+
+        // Update active class only for clicked link and current active link
+        var navLinks = document.querySelectorAll(".navbar a");
+        for (var i = 0; i < navLinks.length; i++) {
+          // Check if clicked link or current active link
+          if (
+            navLinks[i] === clickedLink ||
+            navLinks[i].classList.contains("active")
+          ) {
+            navLinks[i].classList.toggle("active");
+          } else {
+            navLinks[i].classList.remove("active");
+          }
+        }
+      }
+
+      document.querySelectorAll(".mood-option").forEach((option) => {
+        option.addEventListener("click", function () {
+          document.querySelectorAll(".mood-option").forEach((option) => {
+            option.classList.remove("selected");
+          });
+          this.classList.add("selected");
+
+          const computedStyle = window.getComputedStyle(this);
+          const backgroundColor =
+            computedStyle.getPropertyValue("background-color");
+
+          // Calculate darker shade of the selected color for drop shadow
+          const rgbValues = backgroundColor.match(/\d+/g);
+          const r = parseInt(rgbValues[0]);
+          const g = parseInt(rgbValues[1]);
+          const b = parseInt(rgbValues[2]);
+          const shadowColor = `rgba(${r - 70}, ${g - 70}, ${b - 70}, 0.8)`;
+
+          document.documentElement.style.setProperty(
+            "--selected-mood-color",
+            backgroundColor
+          );
+          document.documentElement.style.setProperty(
+            "--selected-mood-shadow",
+            shadowColor
+          );
+        });
+      });
+
+      document
+        .querySelector(".record-btn")
+        .addEventListener("click", function () {
+          const selectedMood = document.querySelector(".mood-option.selected");
+          if (selectedMood) {
+            const mood = selectedMood.textContent;
+            const recordsList = document.querySelector(".records ul");
+            const recordItem = document.createElement("li");
+
+            // Get current date and time
+            const currentDate = new Date();
+            const dateTimeString = currentDate.toLocaleString();
+
+            // Create a colored pill element
+            const colorPill = document.createElement("span");
+            colorPill.classList.add("color-pill");
+            colorPill.style.backgroundColor =
+              window.getComputedStyle(selectedMood).backgroundColor;
+
+            // Append color pill, mood, and date/time stamp to the record item
+            recordItem.appendChild(colorPill);
+            recordItem.innerHTML += ` ${mood} - Recorded on ${dateTimeString}`;
+            recordItem.classList.add("record-item");
+            recordsList.appendChild(recordItem);
+          } else {
+            alert("Please select a mood before recording.");
+          }
+        });
+
+      function showDialog() {
+        document.getElementById("dialog").style.display = "block";
+      }
+
+      function hideDialog() {
+        document.getElementById("dialog").style.display = "none";
+      }
+
+      function toggleBulb() {
+        const button = document.getElementById("toggleButton");
+        if (button.classList.contains("button-on")) {
+          button.classList.remove("button-on");
+          button.textContent = "Turn LED On"; // Reflects the off state
+        } else {
+          button.classList.add("button-on");
+          button.textContent = "Turn LED Off"; // Reflects the on state
+        }
+      }
+    </script>
+  </body>
+</html>

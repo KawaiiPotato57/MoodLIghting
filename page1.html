@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigation Bar Example</title>
+    <style>
+      .body {
+        background-color: #acacac;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        color: #333;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: #0056b3;
+      }
+      .moods-container {
+        display: flex;
+        flex-direction: row;
+        justify-items: center;
+        align-items: center;
+        margin: 10% 0 20% 0;
+      }
+      .mood-select {
+        margin-bottom: 20px;
+      }
+      .mood-option.selected {
+        border-color: var(--selected-mood-color);
+        filter: drop-shadow(10px 0px 10px var(--selected-mood-shadow));
+        transform: scale(1.2);
+        border-radius: 50%;
+      }
+
+      .mood-option {
+        padding: 20px;
+        margin-right: 20px;
+        border: 2px solid transparent;
+        border-radius: 20px;
+        cursor: pointer;
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+      }
+
+      .mood-option.selected {
+        border-color: #ffffff;
+      }
+      .records {
+        margin-top: 20px;
+      }
+      .records ul {
+        list-style: none;
+        padding: 0;
+      }
+      .record-item {
+        background-color: #b2b2b2;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .color-pill {
+        display: inline-block;
+        width: 30px;
+        height: 10px;
+        border-radius: 5px;
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+   
+    <!-- Navigation Bar -->
+
+    <!-- Content Area -->
+    <div class="content">
+      <!-- Code goes here -->
+      <div class="container">
+        <h1>Page 1: Mood Recorder</h1>
+
+        <!-- Turn LED on/off -->
+        <button class="button">Turn LED On/Off</button>
+
+        <!-- Select Mood -->
+        <div class="mood-select">
+          <p>Select Your Mood:</p>
+          <div class="moods-container">
+            <div
+              class="mood-option excellent"
+              style="background-color: rgb(255, 166, 0)"
+            >
+              Excellent
+            </div>
+            <div
+              class="mood-option good"
+              style="background-color: rgb(255, 255, 0)"
+            >
+              Good
+            </div>
+            <div
+              class="mood-option okay"
+              style="background-color: rgba(255, 245, 224)"
+            >
+              Okay
+            </div>
+            <div
+              class="mood-option bad"
+              style="background-color: rgb(0, 0, 255); color: white"
+            >
+              Bad
+            </div>
+            <div
+              class="mood-option terrible"
+              style="background-color: rgb(161, 0, 0); color: white"
+            >
+              Terrible
+            </div>
+          </div>
+        </div>
+
+        <!-- Record Mood -->
+        <button class="button record-btn">Record Mood</button>
+
+        <!-- Past Records -->
+        <div class="records">
+          <h2>Past Records:</h2>
+          <ul>
+            <!-- Past records will be dynamically populated here -->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript for handling mood selection and recording -->
+    <script>
+      document.querySelectorAll(".mood-option").forEach((option) => {
+        option.addEventListener("click", function () {
+          document.querySelectorAll(".mood-option").forEach((option) => {
+            option.classList.remove("selected");
+          });
+          this.classList.add("selected");
+
+          const computedStyle = window.getComputedStyle(this);
+          const backgroundColor =
+            computedStyle.getPropertyValue("background-color");
+
+          // Calculate darker shade of the selected color for drop shadow
+          const rgbValues = backgroundColor.match(/\d+/g);
+          const r = parseInt(rgbValues[0]);
+          const g = parseInt(rgbValues[1]);
+          const b = parseInt(rgbValues[2]);
+          const shadowColor = `rgba(${r - 70}, ${g - 70}, ${b - 70}, 0.8)`;
+
+          document.documentElement.style.setProperty(
+            "--selected-mood-color",
+            backgroundColor
+          );
+          document.documentElement.style.setProperty(
+            "--selected-mood-shadow",
+            shadowColor
+          );
+        });
+      });
+
+      document
+        .querySelector(".record-btn")
+        .addEventListener("click", function () {
+          const selectedMood = document.querySelector(".mood-option.selected");
+          if (selectedMood) {
+            const mood = selectedMood.textContent;
+            const recordsList = document.querySelector(".records ul");
+            const recordItem = document.createElement("li");
+
+            // Get current date and time
+            const currentDate = new Date();
+            const dateTimeString = currentDate.toLocaleString();
+
+            // Create a colored pill element
+            const colorPill = document.createElement("span");
+            colorPill.classList.add("color-pill");
+            colorPill.style.backgroundColor =
+              window.getComputedStyle(selectedMood).backgroundColor;
+
+            // Append color pill, mood, and date/time stamp to the record item
+            recordItem.appendChild(colorPill);
+            recordItem.innerHTML += ` ${mood} - Recorded on ${dateTimeString}`;
+            recordItem.classList.add("record-item");
+            recordsList.appendChild(recordItem);
+          } else {
+            alert("Please select a mood before recording.");
+          }
+        });
+    </script>
+  </body>
+</html>

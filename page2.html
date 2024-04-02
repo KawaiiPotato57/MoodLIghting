@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page 2: Users and Messages</title>
+    <style>
+      body {
+        background-color: #929292;
+        color: #fff;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #444;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .container h1 {
+        margin-bottom: 20px;
+      }
+
+      .map {
+        width: 250px;
+        height: 250px;
+        background-color: #666;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .blimp {
+        width: 20px;
+        height: 20px;
+        background-color: #f00;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .blimp.green {
+        background-color: #0f0;
+      }
+      .blimp.blue {
+        background-color: #00f;
+      }
+      .blimp.yellow {
+        background-color: #ff0;
+      }
+      .blimp.orange {
+        background-color: #ff8c00;
+      }
+
+      .message-box {
+        background-color: #333;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      .message-box textarea {
+        width: 100%;
+        height: 100px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #666;
+        border-radius: 5px;
+      }
+
+      .message-box button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .dialog {
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      }
+      .colorful-textarea {
+        font-family: Arial, sans-serif;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+
+        margin-bottom: 10px;
+        border: 1px solid #666;
+        border-radius: 5px;
+        height: 100px; /* Same as textarea */
+        overflow: hidden;
+        position: relative;
+        position: absolute;
+        top: 50;
+        left: 20;
+        z-index: 0; /* Lower than the textarea */
+      }
+
+      .transparent-textarea {
+        position: absolute;
+        background-color: transparent;
+        color: transparent;
+        caret-color: #fff;
+        width: calc(100%); /* Account for padding */
+        height: 100px;
+        padding: 10px;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        resize: none;
+        z-index: 1;
+      }
+
+      .message-box {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Users using BULBBBBS right now</h1>
+      <div style="display: flex; justify-content: center; align-items: center">
+        <div class="map">
+          <!-- Blimps representing users -->
+          <div class="blimp red" style="top: 20%; left: 30%"></div>
+          <div class="blimp green" style="top: 40%; left: 50%"></div>
+          <div class="blimp blue" style="top: 60%; left: 70%"></div>
+          <div class="blimp yellow" style="top: 80%; left: 40%"></div>
+          <div class="blimp orange" style="top: 30%; left: 60%"></div>
+        </div>
+      </div>
+
+      <div class="message-box">
+        <div id="colorfulTextBackground" class="colorful-textarea"></div>
+        <textarea
+          id="hiddenTextarea"
+          class="transparent-textarea"
+          placeholder="Write your comforting message here..."
+        ></textarea>
+        <button onclick="showDialog()">Send Message</button>
+      </div>
+    </div>
+
+    <!-- Dialog for feature under development -->
+    <div class="dialog" id="dialog" style="display: none">
+      <p>This feature is under development.</p>
+      <p>COMING SOON!</p>
+      <button onclick="hideDialog()">Close</button>
+    </div>
+
+    <script>
+      function showDialog() {
+        document.getElementById("dialog").style.display = "block";
+      }
+
+      function hideDialog() {
+        document.getElementById("dialog").style.display = "none";
+      }
+
+      document
+        .getElementById("hiddenTextarea")
+        .addEventListener("input", function () {
+          let inputText = this.value;
+          let colorfulHtml = "";
+
+          for (let i = 0; i < inputText.length; i++) {
+            let char = inputText[i];
+            // Generate a random color for each character
+            let color = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(
+              Math.random() * 256
+            )}, ${Math.floor(Math.random() * 256)})`;
+            colorfulHtml += `<span style="color: ${color};">${char}</span>`;
+          }
+
+          document.getElementById("colorfulTextBackground").innerHTML =
+            colorfulHtml;
+        });
+    </script>
+  </body>
+</html>
